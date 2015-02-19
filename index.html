@@ -1,0 +1,163 @@
+<!doctype html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>iSaw</title>
+    
+    <link rel="stylesheet" href="/includes/css/normalize.css" />
+    <link rel="stylesheet" href="/includes/css/foundation.css" />
+    <!--[if lt IE 9]><!-->
+    <link rel="stylesheet" href="/includes/css/foundation.ie8.css" />
+    <!--<![endif]-->
+    <link rel="stylesheet" href="/includes/css/class.css" />
+    <link rel="stylesheet" href="/includes/css/override.css" />
+    <script src="/includes/js/vendor/custom.modernizr.js"></script>
+    <!-- // <script src="/socket.io/socket.io.js"></script> -->
+    <script src="/socket.io/socket.io.js"> </script>
+
+    <script>
+        var id;
+        var board;
+        var layout;
+    </script>
+    
+</head>
+<body>
+	    <!-- Top Navigation Bar -->
+	<div class="fixed">
+    <div class="contain-to-grid">
+    <nav class="top-bar">
+    <ul class="title-area">
+        <li class="name"><h1><a>MinesWithFriends</a></h1></li>
+        <!-- Mobile Title -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    
+    <section class="top-bar-section">
+    <!-- Left Navigation Section -->
+    <ul class="left">
+        <li class="divider"></li>
+        <!-- #menu-item-one -->
+        <li class="divider"></li>
+    </ul>
+    <ul class="right">
+        <li class="divider"></li>
+        <li><a id="you"></a></li>
+    </ul>
+    
+    </section>
+    </nav>
+    </div>
+    </div>
+    
+    <br/><br/><br/><br/>
+    
+    <div class="row">
+        <div class="large-3 columns hide-for-small">
+        <div id="users" class="section-container vertical-nav " data-section>
+        </div>
+        </div>
+        
+        <div class="large-9 columns">
+        <div class="panel text-center">
+        	<div id="minesweeper" class="row">
+            </div>
+        </div>
+        </div>
+    </div>
+    
+	<!-- Copyright Section -->
+    <div id="copyright">
+    <div class="row">
+        <div class="large-8 small-12 columns push-4">
+        <!--
+        <ul class="inline-list right">
+            <li>Follow me on:</li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Google+</a></li>
+            <li><a href="#">Twitter</a></li>
+        </ul>
+        -->
+        </div>
+        <div class="large-4 small-12 columns pull-8">
+        	<p>HackRU Spring 2013</p>
+        </div>
+    </div>
+    </div>
+    
+	<!-- Imported JavaScript Files -->
+	<script>
+		document.write('<script src=' +
+		('__proto__' in {} ? '/includes/js/vendor/zepto' : 'includes/js/vendor/jquery') +
+		'.js><\/script>')
+    </script>
+    <script type="text/javascript" src="/includes/js/foundation.min.js"></script>
+    <script type="text/javascript" src="/includes/js/interface.js"></script>
+    <script src="http://static.opentok.com/v1.1/js/TB.min.js" ></script>
+    <script>$(document).foundation();</script>
+    <!--
+    <script id="TB_tokshow_fan_embed_js" src="http://api.opentok.com/hl/tokshow/2embd71d3ef9215dc2e7db5cf1e66f111c483193/fan_embed.js?size=large&width=979&height=439" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var apiKey = "24536762"; // Replace with your API key. See @tokbox.nwidget.dashboard_url@/projects
+		var sessionId = ""; // Replace with your own session ID.
+							// See @tokbox.nwidget.dashboard_url@/projects
+		var token = "";
+	</script>
+    -->
+    <script>
+        // var socket = io.connect('http://mineswithfriends.tk');
+        var socket = io.connect();
+        socket.on('id', function(data) {
+            id = data;
+            document.getElementById('you').innerHTML = "Your Guest ID is " + id;
+        });
+        socket.on('board', function(data) {
+            board = data;
+            createBoard(board);
+        });
+        socket.on('gameover', function(data) {
+            gameOver(JSON.parse(data));
+        });
+        socket.on('event', function(data) {
+            var square = JSON.parse(data);
+            console.log(square);
+            update(square.yCoord, square.xCoord, square.user, square.hasMine, square.numMines);
+        });
+        socket.on('newuser', function(data) {
+            usr = JSON.parse(data);
+            if(usr.id != id){
+                appendUser(usr);
+            }
+        });
+        socket.on('disconnect', function(data) {
+            console.log("Server disconnected");
+            $('.row').click(false);
+        });
+
+        /*socket.on('news', function (data) {
+            console.log(data);
+            if(id != data.id){
+                var textbox = document.getElementById('box');
+                value = data.text;
+                textbox.value = data.text;
+            }
+        });*/
+        /*function getValue(){
+            var textbox = document.getElementById('box');
+            console.log(textbox.value);
+            return textbox.value;
+        }*/
+        /*setInterval(function(){
+            var textbox = document.getElementById('box');
+            if(value != getValue()){
+                socket.emit('value', {text:textbox.value,id:id});
+                value = getValue();
+            }
+        },200);*/ 
+    </script>
+    <script src="http://static.opentok.com/v1.1/js/TB.min.js"></script>
+    <script id="tb-video-bar" src="https://api.opentok.com/hl/embed/2emb188ee698519128920730463a4da179b6e095/bar.js" rel="#ce26e9"></script>
+</body>
+</html>
