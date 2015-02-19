@@ -1,6 +1,6 @@
 minesWithFriends
 ================
 
-nodejs real time multiplayer minesweeper
+Node.js real-time multiplayer Minesweeper
 
-Made at HackRU 2013 (Made in 12 hours)
+Originally Made at HackRU 2013
